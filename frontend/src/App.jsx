@@ -8,10 +8,10 @@ function App() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    fetch("/api")
+    fetch("/players")
       .then((response) => response.json())
       .then((result) => {
-        alert(`Hello ${result.hello}!`);
+        alert(`Hello ${result[0]}!`);
       });
   }, []);
 
