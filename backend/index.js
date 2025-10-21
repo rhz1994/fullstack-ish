@@ -13,4 +13,5 @@ app.use(express.static(path.join(path.resolve(), "dist")));
 
 app.listen(port, () => {
   console.log(`Backend är igång på port: ${port}`);
+  console.log("Path", path.resolve());
 });
