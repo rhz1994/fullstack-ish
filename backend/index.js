@@ -20,10 +20,7 @@ const client = new Client({
 
 client.connect();
 
-app.get("/api", async (_request, response) => {
-  const { rows } = await client.query("SELECT * FROM cities WHERE name = $1", [
-    "Stockholm",
-  ]);
-
+app.get("/players", async (_request, response) => {
+  const { rows } = await client.query("SELECT * FROM nhl_players;");
   response.send(rows);
 });
