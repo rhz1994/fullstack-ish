@@ -10,7 +10,7 @@ function App() {
     fetch("/players")
       .then((response) => response.json())
       .then((data) => {
-        setPlayers(data); // spara datan i state
+        setPlayers(data);
       })
       .catch((err) => console.error(err));
   }, []);
