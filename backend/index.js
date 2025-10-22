@@ -23,6 +23,5 @@ client.connect();
 app.get("/players", async (_request, response) => {
   const { rows } = await client.query("SELECT * FROM nhl_players;");
   response.send(rows);
+  console.log(rows);
 });
-
-console.log("Test");
