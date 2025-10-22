@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { useEffect } from "react";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     fetch("/players")
       .then((response) => response.json())
-      .then((result) => {
-        alert(`Hello ${result[0]}!`);
-      });
+      .then((data) => {
+        setPlayers(data); // spara datan i state
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -25,18 +25,40 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Fullstack-ish</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Fullstack-ish NHL Players</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Team</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Points</th>
+            <th>Games</th>
+            <th>PPG</th>
+            <th>+/-</th>
+            <th>PIM</th>
+          </tr>
+        </thead>
+        <tbody>
+          {players.map((player) => (
+            <tr key={player.id}>
+              <td>{player.name}</td>
+              <td>{player.position}</td>
+              <td>{player.team}</td>
+              <td>{player.goals}</td>
+              <td>{player.assists}</td>
+              <td>{player.points}</td>
+              <td>{player.games}</td>
+              <td>{player.points_per_game}</td>
+              <td>{player.plus_minus}</td>
+              <td>{player.pim}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }
