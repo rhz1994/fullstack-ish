@@ -32,8 +32,12 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      setPlayers([...players, data]);
+      await res.json();
+
+      const updatedRes = await fetch("/players");
+      const updatedPlayers = await updatedRes.json();
+      setPlayers(updatedPlayers);
+
       resetForm();
     } catch (err) {
       console.error("Du lyckades inte lägga till en spelare", err);
@@ -49,10 +53,11 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      setPlayers(
-        players.map((player) => (player.id === data.id ? data : player))
-      );
+      await res.json();
+
+      const updatedRes = await fetch("/players");
+      const updatedPlayers = await updatedRes.json();
+      setPlayers(updatedPlayers);
       resetForm();
     } catch (err) {
       console.error("Du lyckades inte uppdatera till en spelare", err);
@@ -94,9 +99,8 @@ function App() {
 
   return (
     <div>
-      <h1>NHL Top 10</h1>
+      <h1>NHL Poängliga</h1>
 
-      {/* Välj åtgärd */}
       <label>
         Välj åtgärd:
         <select value={action} onChange={(e) => setAction(e.target.value)}>
@@ -150,6 +154,7 @@ function App() {
             <input
               type="number"
               placeholder="Goals"
+              min="0"
               value={formData.goals}
               onChange={(e) =>
                 setFormData({ ...formData, goals: e.target.value })
@@ -159,6 +164,7 @@ function App() {
             <input
               type="number"
               placeholder="Assists"
+              min="0"
               value={formData.assists}
               onChange={(e) =>
                 setFormData({ ...formData, assists: e.target.value })
@@ -168,6 +174,7 @@ function App() {
             <input
               type="number"
               placeholder="Points"
+              min="0"
               value={formData.points}
               onChange={(e) =>
                 setFormData({ ...formData, points: e.target.value })
@@ -177,6 +184,7 @@ function App() {
             <input
               type="number"
               placeholder="Games"
+              min="0"
               value={formData.games}
               onChange={(e) =>
                 setFormData({ ...formData, games: e.target.value })
@@ -195,11 +203,10 @@ function App() {
         </button>
       </form>
 
-      {/* Lista spelare */}
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Spelar-ID</th>
             <th>Name</th>
             <th>Position</th>
             <th>Team</th>

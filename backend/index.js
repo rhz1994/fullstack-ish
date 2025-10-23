@@ -8,6 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(express.static(path.join(path.resolve(), "dist")));
 
 // Databas
@@ -15,7 +16,7 @@ const client = new Client({
   connectionString: process.env.PGURI,
 });
 client.connect();
-app.use(express.json());
+
 // GET
 app.get("/players", async (_req, res) => {
   try {
@@ -107,4 +108,5 @@ app.delete("/players/:id", async (req, res) => {
 app.listen(port, () => {
   console.log(`Backend är igång på port: ${port}`);
   console.log("Path", path.resolve());
+  console.log("DATABASE_PGURI:", process.env.PGURI);
 });
