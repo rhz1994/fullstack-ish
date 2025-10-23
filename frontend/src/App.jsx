@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div>
-      <h1>NHL Poängliga</h1>
+      <h1>NHL STATS</h1>
 
       <label>
         Välj åtgärd:
@@ -210,10 +210,11 @@ function App() {
             <th>Name</th>
             <th>Position</th>
             <th>Team</th>
+            <th>Games</th>
+
             <th>Goals</th>
             <th>Assists</th>
             <th>Points</th>
-            <th>Games</th>
           </tr>
         </thead>
         <tbody>
@@ -223,10 +224,13 @@ function App() {
               <td>{player.name}</td>
               <td>{player.position}</td>
               <td>{player.team}</td>
+              <td>{player.games}</td>
+
               <td>{player.goals}</td>
               <td>{player.assists}</td>
-              <td>{player.points}</td>
-              <td>{player.games}</td>
+              <td>
+                <strong>{player.points}</strong>
+              </td>
             </tr>
           ))}
         </tbody>

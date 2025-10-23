@@ -23,7 +23,7 @@ app.get("/players", async (_req, res) => {
     const { rows } = await client.query(
       "SELECT * FROM nhl_players ORDER BY points DESC;"
     );
-    res.send(rows);
+    res.json(rows);
     console.log(rows);
   } catch (err) {
     console.error(err);
