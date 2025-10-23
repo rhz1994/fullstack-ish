@@ -108,5 +108,4 @@ app.delete("/players/:id", async (req, res) => {
 app.listen(port, () => {
   console.log(`Backend är igång på port: ${port}`);
   console.log("Path", path.resolve());
-  console.log("DATABASE_PGURI:", process.env.PGURI);
 });
