@@ -1,35 +1,205 @@
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
   const [players, setPlayers] = useState([]);
+  const [action, setAction] = useState("POST");
+  const [formData, setFormData] = useState({
+    id: "",
+    name: "",
+    position: "",
+    team: "",
+    goals: "",
+    assists: "",
+    points: "",
+    games: "",
+  });
 
+  // Hämta alla spelare
   useEffect(() => {
     fetch("/players")
-      .then((response) => response.json())
-      .then((data) => {
-        setPlayers(data);
-      })
+      .then((res) => res.json())
+      .then((data) => setPlayers(data))
       .catch((err) => console.error(err));
   }, []);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Fullstack-ish NHL Players</h1>
+  // POST
+  const addPlayer = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/players", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      setPlayers([...players, data]);
+      resetForm();
+    } catch (err) {
+      console.error("Du lyckades inte lägga till en spelare", err);
+    }
+  };
 
+  // PUT
+  const updatePlayer = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/players/${formData.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      setPlayers(
+        players.map((player) => (player.id === data.id ? data : player))
+      );
+      resetForm();
+    } catch (err) {
+      console.error("Du lyckades inte uppdatera till en spelare", err);
+    }
+  };
+
+  // DELETE - Ta bort spelare
+  const deletePlayer = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch(`/players/${formData.id}`, { method: "DELETE" });
+      setPlayers(
+        players.filter((player) => player.id !== parseInt(formData.id))
+      );
+      resetForm();
+    } catch (err) {
+      console.error("Du lyckades inte ta bort till en spelare", err);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      id: "",
+      name: "",
+      position: "",
+      team: "",
+      goals: "",
+      assists: "",
+      points: "",
+      games: "",
+    });
+  };
+
+  const handleSubmit = (e) => {
+    if (action === "POST") addPlayer(e);
+    else if (action === "PUT") updatePlayer(e);
+    else if (action === "DELETE") deletePlayer(e);
+  };
+
+  return (
+    <div>
+      <h1>NHL Top 10</h1>
+
+      {/* Välj åtgärd */}
+      <label>
+        Välj åtgärd:
+        <select value={action} onChange={(e) => setAction(e.target.value)}>
+          <option value="POST">Lägg till spelare</option>
+          <option value="PUT">Uppdatera spelare</option>
+          <option value="DELETE">Ta bort spelare</option>
+        </select>
+      </label>
+
+      {/* Formulär */}
+      <form onSubmit={handleSubmit} className="player-form">
+        {(action === "PUT" || action === "DELETE") && (
+          <input
+            type="number"
+            placeholder="Spelar-ID"
+            value={formData.id}
+            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            required
+          />
+        )}
+
+        {(action === "POST" || action === "PUT") && (
+          <>
+            <input
+              type="text"
+              placeholder="Name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              required
+            />
+            <input
+              type="text"
+              placeholder="Position"
+              value={formData.position}
+              onChange={(e) =>
+                setFormData({ ...formData, position: e.target.value })
+              }
+              required
+            />
+            <input
+              type="text"
+              placeholder="Team"
+              value={formData.team}
+              onChange={(e) =>
+                setFormData({ ...formData, team: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Goals"
+              value={formData.goals}
+              onChange={(e) =>
+                setFormData({ ...formData, goals: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Assists"
+              value={formData.assists}
+              onChange={(e) =>
+                setFormData({ ...formData, assists: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Points"
+              value={formData.points}
+              onChange={(e) =>
+                setFormData({ ...formData, points: e.target.value })
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Games"
+              value={formData.games}
+              onChange={(e) =>
+                setFormData({ ...formData, games: e.target.value })
+              }
+              required
+            />
+          </>
+        )}
+
+        <button type="submit">
+          {action === "POST"
+            ? "Lägg till"
+            : action === "PUT"
+            ? "Uppdatera"
+            : "Ta bort"}
+        </button>
+      </form>
+
+      {/* Lista spelare */}
       <table>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Position</th>
             <th>Team</th>
@@ -37,14 +207,12 @@ function App() {
             <th>Assists</th>
             <th>Points</th>
             <th>Games</th>
-            <th>PPG</th>
-            <th>+/-</th>
-            <th>PIM</th>
           </tr>
         </thead>
         <tbody>
           {players.map((player) => (
             <tr key={player.id}>
+              <td>{player.id}</td>
               <td>{player.name}</td>
               <td>{player.position}</td>
               <td>{player.team}</td>
@@ -52,14 +220,11 @@ function App() {
               <td>{player.assists}</td>
               <td>{player.points}</td>
               <td>{player.games}</td>
-              <td>{player.points_per_game}</td>
-              <td>{player.plus_minus}</td>
-              <td>{player.pim}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
