@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   const [players, setPlayers] = useState([]);
   const [action, setAction] = useState("POST");
-  const [formData, setFormData] = useState({
+  const [playerData, setplayerData] = useState({
     id: "",
     name: "",
     position: "",
@@ -15,7 +15,7 @@ function App() {
     games: "",
   });
 
-  // Hämta alla spelare
+  // GET
   useEffect(() => {
     fetch("/players")
       .then((res) => res.json())
@@ -30,7 +30,7 @@ function App() {
       const res = await fetch("/players", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(playerData),
       });
       await res.json();
 
@@ -48,10 +48,10 @@ function App() {
   const updatePlayer = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/players/${formData.id}`, {
+      const res = await fetch(`/players/${playerData.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(playerData),
       });
       await res.json();
 
@@ -64,22 +64,22 @@ function App() {
     }
   };
 
-  // DELETE - Ta bort spelare
+  // DELETE
   const deletePlayer = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`/players/${formData.id}`, { method: "DELETE" });
+      await fetch(`/players/${playerData.id}`, { method: "DELETE" });
       setPlayers(
-        players.filter((player) => player.id !== parseInt(formData.id))
+        players.filter((player) => player.id !== parseInt(playerData.id))
       );
       resetForm();
     } catch (err) {
-      console.error("Du lyckades inte ta bort till en spelare", err);
+      console.error("Du lyckades inte ta bort en spelare", err);
     }
   };
 
   const resetForm = () => {
-    setFormData({
+    setplayerData({
       id: "",
       name: "",
       position: "",
@@ -110,14 +110,15 @@ function App() {
         </select>
       </label>
 
-      {/* Formulär */}
       <form onSubmit={handleSubmit} className="player-form">
         {(action === "PUT" || action === "DELETE") && (
           <input
             type="number"
             placeholder="Spelar-ID"
-            value={formData.id}
-            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            value={playerData.id}
+            onChange={(e) =>
+              setplayerData({ ...playerData, id: e.target.value })
+            }
             required
           />
         )}
@@ -127,27 +128,27 @@ function App() {
             <input
               type="text"
               placeholder="Name"
-              value={formData.name}
+              value={playerData.name}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setplayerData({ ...playerData, name: e.target.value })
               }
               required
             />
             <input
               type="text"
               placeholder="Position"
-              value={formData.position}
+              value={playerData.position}
               onChange={(e) =>
-                setFormData({ ...formData, position: e.target.value })
+                setplayerData({ ...playerData, position: e.target.value })
               }
               required
             />
             <input
               type="text"
               placeholder="Team"
-              value={formData.team}
+              value={playerData.team}
               onChange={(e) =>
-                setFormData({ ...formData, team: e.target.value })
+                setplayerData({ ...playerData, team: e.target.value })
               }
               required
             />
@@ -155,9 +156,9 @@ function App() {
               type="number"
               placeholder="Goals"
               min="0"
-              value={formData.goals}
+              value={playerData.goals}
               onChange={(e) =>
-                setFormData({ ...formData, goals: e.target.value })
+                setplayerData({ ...playerData, goals: e.target.value })
               }
               required
             />
@@ -165,9 +166,9 @@ function App() {
               type="number"
               placeholder="Assists"
               min="0"
-              value={formData.assists}
+              value={playerData.assists}
               onChange={(e) =>
-                setFormData({ ...formData, assists: e.target.value })
+                setplayerData({ ...playerData, assists: e.target.value })
               }
               required
             />
@@ -175,9 +176,9 @@ function App() {
               type="number"
               placeholder="Points"
               min="0"
-              value={formData.points}
+              value={playerData.points}
               onChange={(e) =>
-                setFormData({ ...formData, points: e.target.value })
+                setplayerData({ ...playerData, points: e.target.value })
               }
               required
             />
@@ -185,9 +186,9 @@ function App() {
               type="number"
               placeholder="Games"
               min="0"
-              value={formData.games}
+              value={playerData.games}
               onChange={(e) =>
-                setFormData({ ...formData, games: e.target.value })
+                setplayerData({ ...playerData, games: e.target.value })
               }
               required
             />

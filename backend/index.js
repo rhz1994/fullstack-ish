@@ -11,7 +11,6 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(path.resolve(), "dist")));
 
-// Databas
 const client = new Client({
   connectionString: process.env.PGURI,
 });
